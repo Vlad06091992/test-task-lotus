@@ -5,7 +5,8 @@ body {
     width: 100vw;
     height: 100vh;
     background-image: url("https://wp-s.ru/wallpapers/6/18/562813614970884/zv-zdnye-vojny-dart-vejder.jpg");
-    margin: 0;
+    background-repeat: no-repeat;
+    background-color: black;
     font-family: 'Press Start 2P', system-ui;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
