@@ -1,87 +1,89 @@
 import React, {ChangeEvent} from 'react';
 import axios from 'axios';
+import {PersonType} from "../src/types";
+import {Preloader} from "./components/preloader/Preloader";
+import Input from "../src/components/ui/input/input";
+import Person from "../src/components/person/person";
 
 type State = {
-    searchString:string,
-    searchResults: Person[],
+    searchString: string,
+    searchResults: PersonType[],
+    isLoading: boolean
+    isSearchPerformed: boolean;
 }
 
-
-type Person = {
-    birth_year: string;
-    created: string;
-    edited: string;
-    eye_color: string;
-    films: string[];
-    gender: string;
-    hair_color: string;
-    height: string;
-    homeworld: string;
-    mass: string;
-    name: string;
-    skin_color: string;
-    species: string[];
-    starships: string[];
-    url: string;
-    vehicles: string[];
-};
-
 class App extends React.Component {
-  debouncedSearch: (...args:any) => void;
-  state:State
-  constructor(props:{}) {
-    super(props);
-    this.state = {
-      searchString: '',
-      searchResults: [],
-    };
+    debouncedSearch: (...args: any) => void;
+    state: State
 
-    this.debouncedSearch = this.debounce(this.search, 1000);
-  }
+    constructor(props: {}) {
+        super(props);
+        this.state = {
+            searchString: '',
+            searchResults: [],
+            isLoading: false,
+            isSearchPerformed: false
+        };
 
-  debounce(func:Function, delay:number) {
-    let timer:NodeJS.Timeout;
-    return (...args: any) => {
-      clearTimeout(timer);
-      timer = setTimeout(() => func.apply(this, args), delay);
-    };
-  }
-
-  handleInputChange = (event:ChangeEvent<HTMLInputElement>) => {
-      // debugger
-    const searchString = event.target.value;
-    this.setState({ searchString });
-    this.debouncedSearch(searchString);
-  };
-
-  search = async (string:string) => {
-    try {
-      const response = await axios.get(`https://swapi.dev/api/people/?search=${string}`);
-      this.setState({ searchResults: response.data.results });
-    } catch (error) {
-      console.error('Ошибка при выполнении запроса:', error);
+        this.debouncedSearch = this.debounce(this.search, 1000);
     }
-  };
 
-  render() {
-    const { searchString, searchResults } = this.state;
+    debounce(func: Function, delay: number) {
+        let timer: NodeJS.Timeout;
+        return (...args: any) => {
+            clearTimeout(timer);
+            timer = setTimeout(() => func.apply(this, args), delay);
+        };
+    }
 
-    return (
-        <div>
-          <input
-              type="text"
-              value={searchString}
-              onChange={this.handleInputChange}
-              placeholder="Введите имя персонажа"
-          />
-          <ul>
-            {searchResults.map((result:Person) => (
-                <li key={result.created}>{result.name}</li>
-            ))}
-          </ul>
-        </div>
-    );
-  }
+    // componentDidMount() {
+    //     this.setState({isSearchPerformed: false})
+    // }
+
+    handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const searchString = event.target.value;
+        this.setState({searchString});
+        this.debouncedSearch(searchString);
+    };
+
+    search = async (string: string) => {
+        if (!string.length) {
+            this.setState({searchResults: [],isSearchPerformed: false});
+            return}
+
+        try {
+            this.setState({isLoading: true})
+            const response = await axios.get(`https://swapi.dev/api/people/?search=${string}`);
+
+            this.setState({
+                isSearchPerformed: true,
+                searchResults: response.data.results
+            })
+        } catch (error) {
+            console.error('Ошибка при выполнении запроса:', error);
+        } finally {
+            this.setState({isLoading:false})
+        }
+    };
+
+    render() {
+        const {searchString, searchResults} = this.state;
+
+        return (
+            <div>
+                {this.state.isLoading && <Preloader/>}
+                <Input  value={searchString} onChange={this.handleInputChange}/>
+                {this.state.searchResults.length > 0 && <ul>
+                    {searchResults.map((p: PersonType) => (
+                        <Person key={p.birth_year} person={p}/>
+                    ))}
+                </ul>}
+                {this.state.isSearchPerformed && !this.state.searchResults.length && <ul>
+                    <p>Персонажи с данным именем не нашлись :(</p>
+                </ul>}
+            </div>
+        );
+    }
 }
 
 export default App
