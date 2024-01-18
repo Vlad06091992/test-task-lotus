@@ -1,9 +1,11 @@
 import React, {ChangeEvent} from 'react';
 import axios from 'axios';
-import {PersonType} from "../src/types";
-import {Preloader} from "./components/preloader/Preloader";
-import Input from "../src/components/ui/input/input";
-import Person from "../src/components/person/person";
+import {PersonType} from "../../types";
+import {Preloader} from "../preloader/Preloader";
+import Input from "../ui/input/input";
+import Person from "../person/person";
+
+import s from './App.module.css'
 
 type State = {
     searchString: string,
@@ -15,7 +17,6 @@ type State = {
 class App extends React.Component {
     debouncedSearch: (...args: any) => void;
     state: State
-
     constructor(props: {}) {
         super(props);
         this.state = {
@@ -24,10 +25,8 @@ class App extends React.Component {
             isLoading: false,
             isSearchPerformed: false
         };
-
         this.debouncedSearch = this.debounce(this.search, 1000);
     }
-
     debounce(func: Function, delay: number) {
         let timer: NodeJS.Timeout;
         return (...args: any) => {
@@ -35,10 +34,6 @@ class App extends React.Component {
             timer = setTimeout(() => func.apply(this, args), delay);
         };
     }
-
-    // componentDidMount() {
-    //     this.setState({isSearchPerformed: false})
-    // }
 
     handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         const searchString = event.target.value;
@@ -69,17 +64,17 @@ class App extends React.Component {
     render() {
         const {searchString, searchResults} = this.state;
 
-        return (
+       return (
             <div>
                 {this.state.isLoading && <Preloader/>}
-                <Input  value={searchString} onChange={this.handleInputChange}/>
+                <Input value={searchString} onChange={this.handleInputChange}/>
                 {this.state.searchResults.length > 0 && <ul>
                     {searchResults.map((p: PersonType) => (
                         <Person key={p.birth_year} person={p}/>
                     ))}
                 </ul>}
                 {this.state.isSearchPerformed && !this.state.searchResults.length && <ul>
-                    <p>Персонажи с данным именем не нашлись :(</p>
+                    <p className={s.description}>Персонажи с данным именем не нашлись :(</p>
                 </ul>}
             </div>
         );

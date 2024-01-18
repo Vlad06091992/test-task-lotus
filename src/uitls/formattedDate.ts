@@ -1,7 +1,7 @@
-type hz = {[key: number]: string};
+type Args = {[key: number]: string};
 
 export const formattedDate = (date:string) => {
-    const monthsEn:hz = {
+    const monthsEn:Args = {
         0: 'January',
         1: 'February',
         2: 'March',
@@ -16,13 +16,10 @@ export const formattedDate = (date:string) => {
         11: 'December'
     };
 
-
-
     const created = new Date(date);
     const day = created.getDate();
-    const month = created.getMonth(); // Месяцы в JavaScript начинаются с 0
+    const month = created.getMonth();
     const year = created.getFullYear();
 
-
-   return `${day} ${monthsEn[month]} ${year}`;
+    return `${day} ${monthsEn[month]} ${year}`;
 }

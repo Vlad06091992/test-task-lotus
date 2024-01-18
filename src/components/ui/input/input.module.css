@@ -1,0 +1,15 @@
+.input {
+    font-family: 'Press Start 2P', system-ui;
+    font-size: 14px;
+    padding: 10px;
+    margin: 10px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.3s ease-in-out;
+}
+
+.input:focus {
+    border-color: #0825a9;
+    box-shadow: 0 0 5px rgba(8, 37, 169, 0.5);
+}

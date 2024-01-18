@@ -1,5 +1,9 @@
-.person{
-    margin: 10px;
-    background-color: #e8e4e4;
-    border: 1px solid grey;
+.person {
+    margin: 20px;
+    color: #cadfd0;
+}
+
+.personData{
+    font-size: 100%;
+    padding: 5px 0;
 }

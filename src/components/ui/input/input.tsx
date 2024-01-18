@@ -1,4 +1,5 @@
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, createRef, RefObject } from "react";
+import s from './input.module.css';
 
 type Props = {
     value: string;
@@ -6,13 +7,23 @@ type Props = {
 };
 
 class Input extends React.Component<Props> {
+    ref: RefObject<HTMLInputElement>;
+
     constructor(props: Props) {
         super(props);
+        this.ref = createRef<HTMLInputElement>();
     }
 
+    componentDidMount() {
+        if (this.ref.current) {
+            this.ref.current.focus();
+        }
+    }
     render() {
         return (
             <input
+                ref={this.ref}
+                className={s.input}
                 type="text"
                 value={this.props.value}
                 onChange={this.props.onChange}
@@ -22,4 +33,4 @@ class Input extends React.Component<Props> {
     }
 }
 
-export default Input
+export default Input;
