@@ -15,7 +15,7 @@ type State = {
 }
 
 class App extends React.Component {
-    debouncedSearch: (...args: any) => void;
+    debouncedSearch: (arg:string) => void;
     state: State
     constructor(props: {}) {
         super(props);
@@ -29,7 +29,7 @@ class App extends React.Component {
     }
     debounce(func: Function, delay: number) {
         let timer: NodeJS.Timeout;
-        return (...args: any) => {
+        return (...args: Array<unknown>) => {
             clearTimeout(timer);
             timer = setTimeout(() => func.apply(this, args), delay);
         };
